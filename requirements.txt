@@ -1,5 +1,5 @@
 numpy
-opencv-python
+cv2
 matplotlib
 scikit-learn
 Click==7.0

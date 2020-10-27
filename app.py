@@ -4,6 +4,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import time
+import os
+import glob
+
+
+# Removing Files in Static Folder From Server
+files = glob.glob('/static/*')
+for f in files:
+    os.remove(f)
+
 
 app=Flask(__name__)
 
@@ -17,6 +26,9 @@ def hello2():
 
 @app.route('/submit',methods=['POST'])
 def submitdata():
+    files = glob.glob('static/*')
+    for f in files:
+        os.remove(f)
     if request.method == "POST":
         
         k=int(request.form['KValue'])
@@ -24,9 +36,9 @@ def submitdata():
         if request.files:
             image = request.files["image"]
             #print(image)
-            image.save(image.filename)
-            #******************************************************************
-            im=cv2.imread(image.filename)
+            image.save("uploadedImage.jpg")
+            #******************************K DOMINANT COLOUR EXTRACTION************************************
+            im=cv2.imread("uploadedImage.jpg")
             original_shape = im.shape
             im=cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
 
@@ -52,6 +64,10 @@ def submitdata():
             date_string = time.strftime("%Y-%m-%d-%H:%M")
             print(date_string)
             plt.imsave('static/'+date_string+'.jpg', new_img)
+
+            j=glob.glob('*.jpg')
+            for s in j:
+                os.remove(s)
             #*******************************************************************
             print("IMAGE STORED")
             return render_template('ExtractedImage.html',pathe= '/static/'+date_string+'.jpg')
