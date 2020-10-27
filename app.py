@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-
+import time
 
 app=Flask(__name__)
 
@@ -23,7 +23,7 @@ def submitdata():
         
         if request.files:
             image = request.files["image"]
-            print(image)
+            #print(image)
             image.save(image.filename)
             #******************************************************************
             im=cv2.imread(image.filename)
@@ -49,11 +49,12 @@ def submitdata():
                 new_img[ix] = colors[km.labels_[ix]]
                 
             new_img = new_img.reshape((original_shape))
-       
-            plt.imsave('static/testf.jpg', new_img)
+            date_string = time.strftime("%Y-%m-%d-%H:%M")
+            print(date_string)
+            plt.imsave('static/'+date_string+'.jpg', new_img)
             #*******************************************************************
             print("IMAGE STORED")
-            return render_template('ExtractedImage.html')
+            return render_template('ExtractedImage.html',pathe= '/static/'+date_string+'.jpg')
         else :
             print("IMAGE NOT STORED")
             return redirect('/')
